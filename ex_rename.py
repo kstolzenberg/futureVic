@@ -1,3 +1,4 @@
+# modified from RhinoPythonPrimer Rev3
 import rhinoscriptsyntax as rs
 import time
 
