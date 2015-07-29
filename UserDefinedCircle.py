@@ -23,3 +23,6 @@ def CreateCircle():
         # rs.SelectObject(objectId) will select/rhino highlight this object
 
 CreateCircle()
+
+# rs.SetObjectData :: this might be the jam? "set" is the language in gh.
+# i think the sauce is in "rs.GetObject" like number input but of geo type.
