@@ -25,9 +25,10 @@ for u in rs.frange(uDomain[0], uDomain[1], uStep):
         if rs.Distance(pt, rs.BrepClosestPoint(idSurface, pt)[0]) < 0.1:
             srfFrame = rs.SurfaceFrame(idSurface, [u, v]) # create ref plane at each division point
             newPlane = rs.AddPlaneSurface(srfFrame, 1.0, 1.0) # create surface at each ref plane
+            # add height guideline from plane's origin to "ceiling"
             centerPt = rs.SurfaceAreaCentroid(newPlane) # locate center of each new plane
-            # how to make all of these lines end at the same?
-            # endPt = rs.PointAdd(centerPt[0],(0,0,10))
-            rs.AddLine(centerPt[0], rs.PointAdd(centerPt[0], (0,0,10))) # add height guideline from plane's origin
+            limit = 10 # set "ceiling"
+            endPt = limit - centerPt[0][2] # access z coordinate with the tuple
+            rs.AddLine(centerPt[0], rs.PointAdd(centerPt[0], (0,0,endPt)) )
             
 rs.EnableRedraw(True) # refresh viewport at one time only
