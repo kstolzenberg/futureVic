@@ -46,6 +46,13 @@ def contour (crvOffset):
         #print type(target)
         #rs.AddSphere(target, 1)# this is a debug - its making frames in the right place!
     
+    
+    
+    print intCount
+    print "newCrv: %g" % len(newCrvs)
+    
+    print "target: %g " % len(target)
+    
     # add text, reference and orient!
     for crv in newCrvs:
         count += 1
@@ -53,11 +60,17 @@ def contour (crvOffset):
         #crvPl = rs.PointAdd(crvPl[0], (0,0,-1)) # adjust text from plane origin - could fine tune further
         rs.AddText(count, crvPl, 0.25) # should you label on the ground?
         reference = rs.CurveMidPoint(crv) # yes these are 3-d points
+        print "ref: %g" % len(reference)
         #print type(reference)
         # these are both point lists!!! still throwing a type error?!?!!
-        for i in range(0, intCount):
-            rs.OrientObject(crv, reference[i], target[i])
+        #for i in range(0, intCount - 1):
+            #print reference[i] # throws array error with i
+            #print target[i]
+            #rs.OrientObject(crv, reference[i], target[i])
 
 contour(1)
 
 #ptsOnSrf()
+
+
+# This issue is the array lengths - should be 11 in target and reference!!!

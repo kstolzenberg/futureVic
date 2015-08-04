@@ -8,11 +8,11 @@ def flatWorm():
     bend_radius = rs.GetReal("bend radius", 0.5, 0.001) # r1
     perp_radius = rs.GetReal("ribbon plan radius", 2.0, 0.001) #r2
     crvDom = rs.CurveDomain(curveObject) # domain != length // why do we use domains? == "The domain is the set of all possible input values to the function that defines the curve or surface."
-    
+
     crossSections = [] # empty array to store sections
     t_step = (crvDom[1] - crvDom[0]) / samples # this is starting to be a pattern!
     t = crvDom[0] # start pt for loop at the start of the line
-    
+
     for t in rs.frange(crvDom[0], crvDom[1], t_step): # loop thru entire domain w/ floats
         crvCurvature = rs.CurveCurvature(curveObject, t) # evaluate curve with a circle - gives 3d normals & gives radius info
         crossSecPlane = None
@@ -32,8 +32,8 @@ def flatWorm():
             csec = rs.AddEllipse(crossSecPlane, bend_radius, perp_radius) # draw ellipse at tan/normal to point along curve with radii
             crossSections.append(csec) # add ellipses to an array
         t += t_step # step through domain
-    
+
     rs.AddLoftSrf(crossSections) # loft list of curves
     rs.DeleteObjects(crossSections) # delete original list of curves as cleanup
-    
+
 flatWorm()
