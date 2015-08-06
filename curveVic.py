@@ -22,29 +22,34 @@ def curveVic (storyHt):
         centerPt = rs.CurveAreaCentroid(crv)
         # deg = random.randint(0,360)
         # deg = random.randint(0,4) * 90 very swirly!
-        deg = profiles.index(crv) * 30
+        deg = profiles.index(crv) * 10
         rs.RotateObject(crv, centerPt[0], deg)
 
-    # scale each crv randomly
-    for crv in profiles:
-        centerPt = rs.CurveAreaCentroid(crv)
-        x = random.uniform(.25,2)
-        y = random.uniform(.25,2)
-        z = random.uniform(.25,2)
-        rs.ScaleObject(crv, centerPt[0], (x,y,z) )
+#    centerPt = rs.CurveAreaCentroid(profiles[3])
+#    rs.RotateObject(profiles[3], centerPt[0], 30)
+#    centerPt = rs.CurveAreaCentroid(profiles[7])
+#    rs.RotateObject(profiles[7], centerPt[0], 30)
 
-    # add dentils and trim. is there any flow along surface? no center box?!?! just acquire shape
-    # for j in range(len(profiles)):
-    #    points = rs.DivideCurveEquidistant(profiles[j], 1.5)
-    #    for k in points:
-    #        rs.AddSphere(k, .25)
+    # scale each crv randomly
+#    for crv in profiles:
+#        centerPt = rs.CurveAreaCentroid(crv)
+#        x = random.uniform(.25,2)
+#        y = random.uniform(.25,2)
+#        z = 1
+#        rs.ScaleObject(crv, centerPt[0], (x,y,z) )
+
+    # add dentils and trim. map to surface? project? rs.SporphObject() better to use in GUI flow?
+    # is there any flow along surface? no center box?!?! just acquire shape
+#    for j in range(len(profiles)):
+#       points = rs.DivideCurveEquidistant(profiles[j], 5)
+#       for k in points:
+#           rs.AddSphere(k, .25)   
 
     # loft curves and clean up
     finalShape = rs.AddLoftSrf(profiles, closed=False)
     #profiles.append(firstCrv)
     rs.DeleteObjects(profiles)
     rs.CapPlanarHoles(finalShape)
-    
-    # add some trim?
-
+    #rs.ProjectCurveToSurface(pcrv, finalShape, (0,0,-1)) doesn't work so well?
+ 
 curveVic(15)
