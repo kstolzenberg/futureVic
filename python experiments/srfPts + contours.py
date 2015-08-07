@@ -1,4 +1,5 @@
 # creates interpolated curve from a surface - not sure where this would used
+# note that at somepoint, this is as much work as the gui??? careful on user input
 
 import rhinoscriptsyntax as rs
 
@@ -22,55 +23,52 @@ def ptsOnSrf ():
     rs.AddInterpCrvOnSrf(surfaceId, allPts)
     rs.DeleteObjects(allPts)
 
-# issue with list types and the unrolling! needs tweaks!
 def contour (crvOffset):
     # get geometry
     surfaceId = rs.GetObject("pick surface to contour", 0, True, True)
     startPt = rs.GetPoint("base point of contours")
     endPt = rs.GetPoint("end point of contours")
     count = 0
-    
-    # make contours
+    reference = []
+    target = []
+
+    # make contours & store in newCrvs
     newCrvs = rs.AddSrfContourCrvs(surfaceId, (startPt, endPt), crvOffset) # output is a list of GUIDs. can't access raw points
-    
+
     # divide the target surface
     printBed = rs.GetObject("pick surface for layout", 8, True, True)
     intCount = len(newCrvs)
     uDomain = rs.SurfaceDomain(printBed, 0)
     vDomain = rs.SurfaceDomain(printBed, 1)
     uStep = (uDomain[1] - uDomain[0]) / intCount
-    
+
     for u in rs.frange(uDomain[0], uDomain[1], uStep):
-        target = rs.SurfaceFrame(printBed, [u,1])
-        target = target[0] # this is a list of points are the origin points?!?!?
-        #print type(target)
-        #rs.AddSphere(target, 1)# this is a debug - its making frames in the right place!
-    
-    
-    
-    print intCount
-    print "newCrv: %g" % len(newCrvs)
-    
-    print "target: %g " % len(target)
-    
+        layout = rs.SurfaceFrame(printBed, [u,1])
+        target1 = layout[0] # set target to point inside of object - note this is a single point
+        target2 = rs.PointAdd(target1,(0,10,0)) # this could be more parametric
+        target.extend([target1, target2])
+    #print target
+
     # add text, reference and orient!
+    # for orient, we need a list 3 points to reference and 3 points to target!
+    # maybe reference should be curve origin crvPl[0] and midpoint? or else polyline verticies -- need to convert curve to polyline first? 
     for crv in newCrvs:
-        count += 1
-        crvPl = rs.CurvePlane(crv)
-        #crvPl = rs.PointAdd(crvPl[0], (0,0,-1)) # adjust text from plane origin - could fine tune further
+        count += 1 # for label
+        crvPl = rs.CurvePlane(crv) # plane for text
         rs.AddText(count, crvPl, 0.25) # should you label on the ground?
-        reference = rs.CurveMidPoint(crv) # yes these are 3-d points
-        print "ref: %g" % len(reference)
-        #print type(reference)
-        # these are both point lists!!! still throwing a type error?!?!!
+        #crvPl = rs.PointAdd(crvPl[0], (0,0,-1)) # if you wanted to offset text
+        ref1 = rs.CurveMidPoint(crv) 
+        ref2 = crvPl[0]
+        reference.extend([ref1, ref2])
+    #print reference
+        
+        # this is closer but still doesn't work!!
+        # we need reference = ((),()) & target = ((),())   
         #for i in range(0, intCount - 1):
-            #print reference[i] # throws array error with i
-            #print target[i]
             #rs.OrientObject(crv, reference[i], target[i])
 
-contour(1)
-
+contour(2)
 #ptsOnSrf()
 
-
 # This issue is the array lengths - should be 11 in target and reference!!!
+# make sure its orient 3pt!! seems to work better than other
